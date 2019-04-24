@@ -7,13 +7,13 @@ module ``Hof Tests`` =
     let ``Correctly validates success``() =
         let mockLoad _ = { Name = "Fred"; Age = 31 }
         let mockSave _ = Ok()
-        let result = Hof.orchestrator mockLoad mockSave
+        let result = Hof.orchestrator mockLoad mockSave 123
         Ok() |> shouldEqual result
 
     let ``Correctly validates failure``() =
         let mockLoad _ = { Name = "Fred"; Age = 17 }
         let mockSave _ = Ok()
-        let result = Hof.orchestrator mockLoad mockSave
+        let result = Hof.orchestrator mockLoad mockSave 123
         Error "Too young!" |> shouldEqual result
 
     // TODO: Did orchestrator call mock load with correct arguments?
@@ -23,7 +23,7 @@ module ``Bootstrap Tests`` =
     let ``Can test orchestration without validation``() =
         let mockLoad _ = { Name = "Fred"; Age = 17 }
         let mockSave _ = Ok()
-        let result = Bootstrap.orchestrator mockLoad mockSave
+        let result = Bootstrap.orchestrator mockLoad mockSave 123
         Ok() |> shouldEqual result
 
     // TODO: Did orchestrator call mock load with correct arguments?

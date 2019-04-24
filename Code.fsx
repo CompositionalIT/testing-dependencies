@@ -9,50 +9,50 @@ module Untestable =
         if p.Age < 18 then Error "Too young!"
         else DB.savePerson p
 
-    let orchestrator() =
-        let p = DB.loadPerson 123
+    let orchestrator customerId =
+        let p = DB.loadPerson customerId
         validateThenSaveToDb p
 
     let app() =
-        orchestrator()
+        orchestrator 123
 
 module Hof =
     let validateThenSave savePerson p =
         if p.Age < 18 then Error "Too young!"
         else savePerson p
 
-    let orchestrator load save =
-        let p = load 123
+    let orchestrator load save customerId =
+        let p = load customerId
         validateThenSave save p
 
     let app() =
-        orchestrator DB.loadPerson DB.savePerson
+        orchestrator DB.loadPerson DB.savePerson 123
 
 module Bootstrap =
     let validateThenSave savePerson p =
         if p.Age < 18 then Error "Too young!"
         else savePerson p
 
-    let orchestrator load save =
-        let p = load 123
+    let orchestrator load save customerId =
+        let p = load customerId
         save p
 
     let app() =
         let saveToDb = validateThenSave DB.savePerson
-        orchestrator DB.loadPerson saveToDb
+        orchestrator DB.loadPerson saveToDb 123
 
 module Compose =
     let validate p =
         if p.Age < 18 then Error "Too young!"
         else Ok p
 
-    let orchestrator load save =
-        let p = load 123
+    let orchestrator load save customerId =
+        let p = load customerId
         save p
 
     let app() =
         let validateThenSaveToDb = validate >> Result.bind DB.savePerson
-        orchestrator DB.loadPerson validateThenSaveToDb
+        orchestrator DB.loadPerson validateThenSaveToDb 123
     
 module CompositionToTheMax =
     let validate p =
@@ -60,5 +60,5 @@ module CompositionToTheMax =
         else Ok p
             
     let app() =
-        let loadValidateSave = DB.loadPerson >> validate >> Result.bind DB.savePerson
-        loadValidateSave 123
+        let orchestrator = DB.loadPerson >> validate >> Result.bind DB.savePerson
+        orchestrator 123
